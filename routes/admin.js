@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { Category, Ad } = require('../models');
+const { Category, Ad, AnalyticsVisit } = require('../models');
+
+// Admin root test route
+router.get('/', (req, res) => {
+  res.json({ message: "Admin API is running" });
+});
 
 // create category
 router.post('/categories', async (req, res) => {
@@ -16,7 +21,6 @@ router.post('/ads', async (req, res) => {
 });
 
 // basic analytics endpoints (counts)
-const { AnalyticsVisit } = require('../models');
 router.get('/analytics/visits', async (req, res) => {
   const count = await AnalyticsVisit.count();
   res.json({ visits: count });
