@@ -1,13 +1,16 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const path = require('path');
 
 const databaseUrl = process.env.DATABASE_URL || 'sqlite:./data/dev.sqlite';
 const sequelize = new Sequelize(databaseUrl, { logging: false });
-// Ad model (for homepage ads)
+
+// Ad model (single correct version)
 const Ad = sequelize.define('Ad', {
+  location: DataTypes.ENUM('top','bottom','left','right'),
   title: DataTypes.STRING,
   url: DataTypes.STRING,
-  location: DataTypes.STRING
+  imageUrl: DataTypes.STRING,
+  active: { type: DataTypes.BOOLEAN, defaultValue: true },
+  order: { type: DataTypes.INTEGER, defaultValue: 0 }
 });
 
 const Supplier = sequelize.define('Supplier', {
@@ -43,15 +46,6 @@ const Order = sequelize.define('Order', {
   paymentInfo: DataTypes.JSON
 });
 
-const Ad = sequelize.define('Ad', {
-  location: DataTypes.ENUM('top','bottom','left','right'),
-  title: DataTypes.STRING,
-  url: DataTypes.STRING,
-  imageUrl: DataTypes.STRING,
-  active: { type: DataTypes.BOOLEAN, defaultValue: true },
-  order: { type: DataTypes.INTEGER, defaultValue: 0 }
-});
-
 const AnalyticsVisit = sequelize.define('AnalyticsVisit', {
   path: DataTypes.STRING,
   referrer: DataTypes.STRING,
@@ -59,6 +53,7 @@ const AnalyticsVisit = sequelize.define('AnalyticsVisit', {
   userAgent: DataTypes.STRING
 });
 
+// Relations
 Supplier.hasMany(Product);
 Product.belongsTo(Supplier);
 
