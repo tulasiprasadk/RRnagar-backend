@@ -3,9 +3,10 @@ const { Sequelize, DataTypes } = require('sequelize');
 const databaseUrl = process.env.DATABASE_URL || 'sqlite:./data/dev.sqlite';
 const sequelize = new Sequelize(databaseUrl, { logging: false });
 
-// Ad model (single correct version)
+/* =================== MODELS =================== */
+
 const Ad = sequelize.define('Ad', {
-  location: DataTypes.ENUM('top','bottom','left','right'),
+  location: DataTypes.ENUM('top', 'bottom', 'left', 'right'),
   title: DataTypes.STRING,
   url: DataTypes.STRING,
   imageUrl: DataTypes.STRING,
@@ -23,7 +24,8 @@ const Supplier = sequelize.define('Supplier', {
 });
 
 const Category = sequelize.define('Category', {
-  name: { type: DataTypes.STRING, allowNull: false }
+  name: { type: DataTypes.STRING, allowNull: false },
+  icon: { type: DataTypes.STRING, defaultValue: "📦" }  // ⭐ NEW FIELD
 });
 
 const Product = sequelize.define('Product', {
@@ -42,7 +44,7 @@ const Order = sequelize.define('Order', {
   type: DataTypes.ENUM('delivery', 'visit'),
   totalAmount: DataTypes.FLOAT,
   platformFee: DataTypes.FLOAT,
-  status: { type: DataTypes.ENUM('created','paid','delivered','cancelled'), defaultValue: 'created' },
+  status: { type: DataTypes.ENUM('created', 'paid', 'delivered', 'cancelled'), defaultValue: 'created' },
   paymentInfo: DataTypes.JSON
 });
 
@@ -53,7 +55,8 @@ const AnalyticsVisit = sequelize.define('AnalyticsVisit', {
   userAgent: DataTypes.STRING
 });
 
-// Relations
+/* =================== RELATIONS =================== */
+
 Supplier.hasMany(Product);
 Product.belongsTo(Supplier);
 
@@ -66,6 +69,8 @@ Order.belongsTo(Supplier);
 Product.hasMany(Order);
 Order.belongsTo(Product);
 
+/* =================== EXPORT =================== */
+
 module.exports = {
   sequelize,
   Supplier,
@@ -74,6 +79,7 @@ module.exports = {
   Ad,
   Category,
   AnalyticsVisit,
+
   initDb: async () => {
     await sequelize.sync();
   }
