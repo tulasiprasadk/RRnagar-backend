@@ -5,10 +5,10 @@ const url = require('url');
 // Parse DATABASE_URL
 const dbUrl = url.parse(process.env.DATABASE_URL);
 
-// Force IPv4 resolution of hostname
+// Force IPv4 preference
 dns.setDefaultResultOrder('ipv4first');
 
-module.exports = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   host: dbUrl.hostname,
   port: dbUrl.port || 5432,
@@ -26,3 +26,5 @@ module.exports = new Sequelize(process.env.DATABASE_URL, {
     idle: 10000
   }
 });
+
+module.exports = sequelize;
