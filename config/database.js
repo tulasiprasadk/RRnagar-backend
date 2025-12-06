@@ -1,24 +1,20 @@
 const { Sequelize } = require('sequelize');
 const dns = require('dns');
-const url = require('url');
 
-// Parse DATABASE_URL
-const dbUrl = url.parse(process.env.DATABASE_URL);
-
-// Force IPv4 preference
+// 🚫 Prevent IPv6 – FORCE IPv4 DNS
 dns.setDefaultResultOrder('ipv4first');
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+module.exports = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  host: dbUrl.hostname,
-  port: dbUrl.port || 5432,
+  logging: false,
   dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
     }
   },
-  logging: false,
+  // 🚫 Disable any IPv6 fallback
+  host: undefined,
   pool: {
     max: 5,
     min: 0,
@@ -26,5 +22,3 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     idle: 10000
   }
 });
-
-module.exports = sequelize;
