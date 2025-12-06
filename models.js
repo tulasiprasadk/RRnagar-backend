@@ -1,9 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('./config/database');
 
-const databaseUrl = process.env.DATABASE_URL || 'sqlite:./data/dev.sqlite';
-const sequelize = new Sequelize(databaseUrl, { logging: false });
-
-/* =================== MODELS =================== */
+// =================== MODELS ===================
 
 const Ad = sequelize.define('Ad', {
   location: DataTypes.ENUM('top', 'bottom', 'left', 'right'),
@@ -25,7 +23,7 @@ const Supplier = sequelize.define('Supplier', {
 
 const Category = sequelize.define('Category', {
   name: { type: DataTypes.STRING, allowNull: false },
-  icon: { type: DataTypes.STRING, defaultValue: "📦" }  // ⭐ NEW FIELD
+  icon: { type: DataTypes.STRING, defaultValue: "📦" }
 });
 
 const Product = sequelize.define('Product', {
@@ -44,7 +42,10 @@ const Order = sequelize.define('Order', {
   type: DataTypes.ENUM('delivery', 'visit'),
   totalAmount: DataTypes.FLOAT,
   platformFee: DataTypes.FLOAT,
-  status: { type: DataTypes.ENUM('created', 'paid', 'delivered', 'cancelled'), defaultValue: 'created' },
+  status: {
+    type: DataTypes.ENUM('created', 'paid', 'delivered', 'cancelled'),
+    defaultValue: 'created'
+  },
   paymentInfo: DataTypes.JSON
 });
 
@@ -55,7 +56,7 @@ const AnalyticsVisit = sequelize.define('AnalyticsVisit', {
   userAgent: DataTypes.STRING
 });
 
-/* =================== RELATIONS =================== */
+// =================== RELATIONS ===================
 
 Supplier.hasMany(Product);
 Product.belongsTo(Supplier);
@@ -69,17 +70,16 @@ Order.belongsTo(Supplier);
 Product.hasMany(Order);
 Order.belongsTo(Product);
 
-/* =================== EXPORT =================== */
+// =================== EXPORT ===================
 
 module.exports = {
   sequelize,
+  Ad,
   Supplier,
+  Category,
   Product,
   Order,
-  Ad,
-  Category,
   AnalyticsVisit,
-
   initDb: async () => {
     await sequelize.sync();
   }
