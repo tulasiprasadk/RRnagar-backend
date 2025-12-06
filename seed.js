@@ -1,3 +1,5 @@
+require('dotenv').config();   // <-- ADD THIS
+
 const { Product, Supplier, Ad } = require('./models');
 
 async function seed() {

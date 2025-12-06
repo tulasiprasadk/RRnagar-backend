@@ -23,6 +23,14 @@ const PORT = process.env.PORT || 4000;
   try {
     await sequelize.authenticate();  // ❗ Only authenticate, do NOT sync
     console.log("✅ Connected to Supabase database");
+const { initDb } = require("./models");
+
+initDb().then(() => {
+  console.log("📦 Database synced successfully on Render!");
+}).catch(err => {
+  console.error("❌ Failed to sync database:", err);
+});
+
 
     app.listen(PORT, () =>
       console.log(`🚀 RR Nagar backend running on http://localhost:${PORT}`)
